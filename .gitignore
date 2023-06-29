@@ -21,6 +21,9 @@ gradle-app.setting
 .classpath
 
 .idea
-settings.gradle
+out/
 gradlew
+gradlew/
+settings.gradle
 *.bat
+*.log

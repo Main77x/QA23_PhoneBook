@@ -1,43 +1,38 @@
 package com.phonebook.tests;
 
-import org.openqa.selenium.By;
+import com.phonebook.model.User;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-public class LoginTests extends TestBase {
-        @BeforeMethod
+public class LoginTests extends TestBase{
+
+    @BeforeMethod
     public void ensurePrecondition() {
-        if (!isElementPresent(By.xpath("//a[.='LOGIN']"))) {
-            click(By.xpath("//button[.='Sign Out']"));
+        if (!app.getHeader().isLoginLinkPresent()) {
+            app.getHeader().clickOnSignOutButton();
         }
-        //click Login link
-        click(By.xpath("//a[.='LOGIN']"));
+        app.getHeader().clickOnLoginLink();
     }
 
-    @Test
+    @Test(priority = 1)
     public void loginPositiveTest() {
-
         //enter email field
-        // [placeholder='Email']
-        type(By.cssSelector("[placeholder='Email']"), "ira@gmail.com");
-
-
-        //enter password field
-        // [placeholder='Password']
-        type(By.cssSelector("[placeholder='Password']"), "Ira12345$");
-
-
-        //click on Registration
-
-        //by.name - registration
-        click(By.name("login"));
-
-        //assert user logged in ( check Sign Out button displayed)
-        Assert.assertTrue(isElementPresent(By.xpath("//button[.='Sign Out']")));
-
+        app.getUser().fillLoginRegistrationForm(new User()
+                .setEmail("ira@gmai.de")
+                .setPassword("Ira12345678$"));
+        //click on Login button
+        app.getUser().clickOnLoginButton();
+        //assert user logged in(check Sign Out button displayed)
+        Assert.assertTrue(app.getHeader().isSignOutButtonPresent());
     }
 
+    @Test(priority = 2)
+    public void loginNegativeWithoutPasswordTest() {
+        //enter email field
+        app.getUser().fillLoginRegistrationForm(new User().setEmail("ira@gmai.de"));
+        //click on Login button
+        app.getUser().clickOnLoginButton();
+        Assert.assertTrue(app.getUser().isAlertPresent());
+    }
 }
-
-
